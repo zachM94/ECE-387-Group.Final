@@ -5,6 +5,7 @@
 RF24 radio(7,8);
 unsigned long pipe = 0xE8E8;
 unsigned long msg = 10001;
+int buttonDown = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -16,33 +17,38 @@ void setup() {
     radio.begin();
     radio.setChannel(108);
     radio.openWritingPipe(pipe);
-    radio.startListening();
+    radio.stopListening();
     radio.printDetails();
 }
 
 void loop() {
-  radio.stopListening();
+  
   if (digitalRead(9) == HIGH){      
-    msg = 10011;                
+    msg = 10011;
+    Serial.println(msg); 
+    buttonDown = 1;               
   }
   else if (digitalRead(10) == HIGH){
     msg = 10101;
+    Serial.println(msg); 
+    buttonDown = 1;    
   }
   else if (digitalRead(11) == HIGH) {
     msg = 11001;
+    Serial.println(msg); 
+    buttonDown = 1;    
   }
   else{
     msg = 10001;
+    Serial.println(msg); 
     Serial.println("Awaiting Input....");
+    buttonDown = 0;    
   }
-  
-  while (!radio.write(&msg, sizeof(msg))){
-      radio.write(&msg, sizeof(msg));
-      Serial.println("Sending.....");
-    }
+
+  if (buttonDown){
+   while (!radio.write(&msg, sizeof(msg))){
+       Serial.println("Sending.....");
+     }
+  }
   delay(500); 
   }
-    
-
-
-
