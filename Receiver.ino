@@ -34,7 +34,6 @@ void loop() {
     radio.read(&msg, sizeof(msg));
     Serial.println("Incoming...");
     delay(500);
-    Serial.println(msg);
     }
   }
   else{
