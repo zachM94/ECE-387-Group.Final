@@ -1,20 +1,24 @@
 #include <SPI.h>
 #include "RF24.h"
 #include <printf.h>
+//Creating the radio Constructor and configure ce & csn pin -> radio(ce,csn) 
 RF24 radio(2,3);
 unsigned long pipe = 0xE8E8;
 unsigned long msg;
 
 void setup() {
+    //Initial Serial communication and declare baud rate
     Serial.begin(115200);
     printf_begin();
     Serial.println("Receiver");
+
     pinMode(9, OUTPUT);
     pinMode(10, OUTPUT);
     pinMode(11, OUTPUT);
     radio.begin();
     radio.setChannel(108);
     radio.openReadingPipe(0,pipe);
+    //Print debugging information
     radio.printDetails();
  
 }
