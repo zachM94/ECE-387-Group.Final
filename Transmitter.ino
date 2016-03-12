@@ -22,6 +22,8 @@ void setup() {
 }
 
 void loop() {
+
+
   
   if (digitalRead(9) == HIGH){      
     msg = 10011;
@@ -40,14 +42,13 @@ void loop() {
   }
   else{
     msg = 10001;
-    Serial.println(msg); 
     Serial.println("Awaiting Input....");
     buttonDown = 0;    
   }
 
   if (buttonDown){
-   while (!radio.write(&msg, sizeof(msg))){
-       Serial.println("Sending.....");
+     if (!radio.write( &msg, sizeof(unsigned long) )){
+       Serial.println("failed");
      }
   }
   delay(500); 
