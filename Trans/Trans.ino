@@ -11,8 +11,8 @@
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
 bool radioNumber = 1;
-int picNum = 3;
-String RGB;
+int picNum = 1;
+//String RGB;
 long count;
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
@@ -21,14 +21,21 @@ RF24 radio(7,8);
 
 byte addresses[][6] = {"1Node","2Node"};
 unsigned long msg;
-int startButton = 0;
+int startButton = 1;
 int DIBSize;
 File myPic;
+
+struct dataStruct{
+  long R;
+  long G;
+  long B;
+  }RGB;
 
 void setup() {
   Serial.begin(115200);
   radio.begin();
     //set up SD card
+  pinMode(startButton, INPUT);  
   pinMode(10, OUTPUT);
   if (!SD.begin(10)) {
     Serial.println("SD Failed!");
@@ -37,6 +44,12 @@ void setup() {
   else {
     Serial.println("SD READY!");
   }
+   myPic = SD.open("test.bmp");
+  if (myPic) {
+    Serial.println("test:");
+
+  radio.setPALevel(RF24_PA_MAX);
+  radio.setChannel(108);    
     
   if(radioNumber){
     radio.openWritingPipe(addresses[1]);
@@ -47,16 +60,16 @@ void setup() {
   }
   radio.stopListening();
 }
-
+}
 void loop() {
-  if (true) {
+  if (startButton) {
     for(int k = 0; k < picNum; k++) {
       myPic = SD.open("test.bmp");
       if (myPic) {
         Serial.println(k);
       }
     }
-    for(int x = 0;x < 14;x++){
+    for(int x = 0; x<14;x++){
       myPic.read();
       Serial.println(x);
     }    
@@ -64,21 +77,29 @@ void loop() {
     Serial.println(DIBSize);
     for(int j = 0;j < (DIBSize-1); j++ ){
       myPic.read();
+      Serial.println(j);
     }
     count = 0;
     while (count != 76800){
-      RGB = "";
-      RGB = String(myPic.read(), HEX);//R
-      RGB.concat(String(myPic.read(), HEX));//G
-      RGB.concat(String(myPic.read(), HEX));//B
-      if (!radio.write( &RGB, sizeof(String) )){
+//      RGB = "";
+//      RGB = String(myPic.read(), HEX);//R
+//      RGB.concat(String(myPic.read(), HEX));//G
+//      RGB.concat(String(myPic.read(), HEX));//B
+      RGB.R = myPic.read();
+      RGB.G = myPic.read();
+      RGB.B = myPic.read();
+      Serial.println("Printing RGB:");
+      Serial.println(RGB.R);
+      Serial.println(RGB.G);
+      Serial.println(RGB.B);
+      if (!radio.write( &RGB, sizeof(RGB) )){
        Serial.println(F("failed"));
-       Serial.println(RGB);
      }
-     delay(1000);
     }
+   myPic.close();     
     }
-  else {
+  else 
     delay(1000);
-  }
+
+  
 }
