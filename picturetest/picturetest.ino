@@ -19,9 +19,9 @@ extern uint8_t SmallFont[];
 UTFT myGLCD(ILI9325D_16, 38, 39, 40, 41);
 
 extern unsigned int pic1[0x12C0];
-extern unsigned int pic2[0x12C0];
-extern unsigned int pic3[0x12C0];
-extern unsigned int pic4[0x12C0];
+extern unsigned int pic2[0x2580];
+extern unsigned int pic3[0x2580];
+extern unsigned int pic4[0x2580];
 
 
 void setup()
@@ -33,15 +33,17 @@ void setup()
 void loop()
 {
   myGLCD.drawBitmap (0, 0, 80, 60, pic1);
-  myGLCD.drawBitmap (80, 0, 80, 60, pic2);
-  myGLCD.drawBitmap (0, 60, 80, 60, pic3);
-  myGLCD.drawBitmap (80, 60, 80, 60, pic4);
+ // myGLCD.drawBitmap (160, 0, 160, 60, pic2);
+  //myGLCD.drawBitmap (0, 60, 160, 60, pic3);
+  //myGLCD.drawBitmap (160, 60, 160, 60, pic4);
   
-  myGLCD.drawBitmap (160, 0, 80, 60, pic1);
-  myGLCD.drawBitmap (240, 0, 80, 60, pic2);
-  myGLCD.drawBitmap (160, 60, 80, 60, pic3);
-  myGLCD.drawBitmap (240, 60, 80, 60, pic4);
   
+ // myGLCD.drawBitmap (0, 120, 160, 60, pic1);
+  //myGLCD.drawBitmap (160, 120, 160, 60, pic2);
+  //myGLCD.drawBitmap (0, 180, 160, 60, pic3);
+  //myGLCD.drawBitmap (160, 180, 160, 60, pic4);
+ 
+  /*
   myGLCD.drawBitmap (0, 120, 80, 60, pic1);
   myGLCD.drawBitmap (80, 120, 80, 60, pic2);
   myGLCD.drawBitmap (0, 180, 80, 60, pic3);
@@ -51,5 +53,5 @@ void loop()
   myGLCD.drawBitmap (240, 120, 80, 60, pic2);
   myGLCD.drawBitmap (160, 180, 80, 60, pic3);
   myGLCD.drawBitmap (240, 180, 80, 60, pic4);
-
+  */
 }

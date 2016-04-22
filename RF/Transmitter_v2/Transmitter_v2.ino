@@ -18,7 +18,8 @@ RF24 radio(7,8);
 /**********************************************************/
 
 byte addresses[][6] = {"1Node","2Node"};
-unsigned long msg;
+//unsigned long msg;
+char msg;
 int buttonState = 0;
 
 void setup() {
@@ -32,15 +33,15 @@ void setup() {
  // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
   radio.setPALevel(RF24_PA_MAX);
   radio.setChannel(108);
-  pinMode(9,INPUT);
-  pinMode(10,INPUT);
-  pinMode(11,INPUT);
+ // pinMode(9,INPUT);
+  //pinMode(10,INPUT);
+ // pinMode(11,INPUT);
   // Open a writing and reading pipe on each radio, with opposite addresses
   
     //set up SD card
-  pinMode(53, OUTPUT);
+  pinMode(10, OUTPUT);
 
-  if (!SD.begin(53)) {
+  if (!SD.begin(10)) {
     Serial.println("SD Failed!");
     return;
   }
@@ -66,7 +67,7 @@ void loop() {
 /****************** Ping Out Role ***************************/  
     
     radio.stopListening();                                    // First, stop listening so we can talk.
-    if (digitalRead(9) == HIGH){
+   /* if (digitalRead(9) == HIGH){
       msg = 10011;
       buttonState = 1;
     }
@@ -82,11 +83,13 @@ void loop() {
       msg = 10001;
       buttonState = 0;
     }
-    if (buttonState){
+    */
+    if (true){
     Serial.println(F("Now sending"));
 
+    msg = 'f' + 'u' + 'n';
     unsigned long start_time = micros();                             // Take the time, and send it.  This will block until complete
-     if (!radio.write( &msg, sizeof(unsigned long) )){
+     if (!radio.write( &msg, sizeof(char) )){
        Serial.println(F("failed"));
      }
         

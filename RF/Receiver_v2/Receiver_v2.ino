@@ -29,9 +29,9 @@ void setup() {
   pinMode(3,OUTPUT);
   pinMode(4,OUTPUT);  
   //set up SD card
-  pinMode(10, OUTPUT);
+  pinMode(53, OUTPUT);
 
-  if (!SD.begin(10)) {
+  if (!SD.begin(53)) {
     Serial.println("SD Failed!");
     return;
   }
@@ -62,28 +62,29 @@ void loop() {
 
 /****************** Pong Back Role ***************************/
     unsigned long got_time;
-    unsigned long msg;    
+    //unsigned long msg;    
+    char msg;
     
     if( radio.available()){
                                                                     // Variable for the received timestamp
       while (radio.available()) {                                   // While there is data ready
-        radio.read( &msg, sizeof(unsigned long) );             // Get the payload
+        radio.read( &msg, sizeof(String) );             // Get the payload
       }
      
       radio.stopListening();                                        // First, stop listening so we can talk   
       radio.write( &got_time, sizeof(unsigned long) );              // Send the final one back.      
       radio.startListening();                                       // Now, resume listening so we catch the next packets.     
-      if (msg == 10011){
+      if (msg == 'f' + 'u' + 'n'){
         digitalWrite(2,HIGH);
         digitalWrite(3,LOW);
         digitalWrite(4,LOW);
       }
-      else if (msg == 10101){
+      else if (msg == 'f' + 'n' + 'n'){
         digitalWrite(2,LOW);
         digitalWrite(3,HIGH);
         digitalWrite(4,LOW);        
       }
-      else if (msg == 11001){
+      else if (msg == 'f' + 't' + 'n'){
         digitalWrite(2,LOW);
         digitalWrite(3,LOW);
         digitalWrite(4,HIGH);         
