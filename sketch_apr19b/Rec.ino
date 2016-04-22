@@ -11,8 +11,15 @@
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
 bool radioNumber = 0;
-String RGB;
+//String RGB;
 File myPic;
+
+struct dataStruct{
+  long R;
+  long G;
+  long B;
+  }RGB;
+  
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 RF24 radio(7,8);
 /**********************************************************/
@@ -61,12 +68,17 @@ void loop() {
       }
      
       Serial.print(F("Sent response "));
-      Serial.println(RGB);  
+      Serial.println(RGB.R);
+      Serial.println(RGB.G);
+      Serial.println(RGB.B);
+        
       
       myPic = SD.open("myPic.txt", FILE_WRITE);
       if (myPic){
         Serial.println("Writing to File");
-        myPic.println(RGB);
+        myPic.println(RGB.R);
+        myPic.println(RGB.G);
+        myPic.println(RGB.B);
         myPic.close();  
       }
       else {
