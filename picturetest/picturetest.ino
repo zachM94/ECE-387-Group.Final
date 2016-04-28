@@ -52,13 +52,13 @@ void setup()
 void loop()
 {
  
- myGLCD.drawBitmap (0, 0, 80, 60, pic1, 4);
+ //myGLCD.drawBitmap (0, 0, 80, 60, pic1, 4);
   //myGLCD.drawBitmap (0, 30, 80, 30, pic2);
 
 
-  /*  
-  unsigned int fun[80];
-
+    
+  unsigned int fun[1];
+/*
   for(int i = 0; i < 60; i++){
     for(int j = 0; j < 80; j++){
       if(x == 4800){
@@ -67,9 +67,9 @@ void loop()
       fun[j] = pgm_read_word_near(pic1 + x);
       x++;
     }
-    myGLCD.drawBitmap (0, i, 80, 1, fun);
+    myGLCD.drawBitmap (0, i, 80, 1, fun, 4);
   }
-
+*/
  
   for(int i = 0; i < 60; i++){
     for(int j = 0; j < 80; j++){
@@ -77,17 +77,19 @@ void loop()
         break;
       }
       fun[0] = pgm_read_word_near(pic1 + x);
-      myGLCD.drawBitmap (j, i, 1, 1, fun);
-      Serial.print("******");
-      Serial.println(x);
-      Serial.println(fun[0], HEX);
-      Serial.println(pgm_read_word_near(pic1 + x), HEX);
+     // myGLCD.drawBitmap (j, i, 1, 1, fun);
+      myGLCD.setColor(fun[0]);
+      myGLCD.drawPixel(j, i);
+     // Serial.print("******");
+     // Serial.println(x);
+     // Serial.println(fun[0], HEX);
+     // Serial.println(pgm_read_word_near(pic1 + x), HEX);
       x++;
     }
   }
   
   
- 
+ /*
   myGLCD.drawBitmap (0, 60, 80, 60, wilson2);
   myGLCD.drawBitmap (0, 120, 80, 60, wilson3);
   myGLCD.drawBitmap (0, 180, 80, 60, wilson4);

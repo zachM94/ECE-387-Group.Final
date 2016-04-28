@@ -64,7 +64,7 @@ void setup() {
 void loop() {
   if (startButton) {
     for(int k = 0; k < picNum; k++) {
-      myPic = SD.open("test.bmp");
+      myPic = SD.open("wilson.bmp");
       if (myPic) {
         Serial.println(k);
       }
@@ -93,7 +93,7 @@ void loop() {
       Serial.println(RGB.G);
       Serial.println(RGB.B);
       if (!radio.write( &RGB, sizeof(RGB) )){
-       Serial.println(F("failed"));
+       //Serial.println(F("failed"));
      }
     }
    myPic.close();     

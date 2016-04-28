@@ -1,41 +1,31 @@
 #include <SPI.h>
 #include <SD.h>
 #include "RF24.h"
+#include <UTFT.h>
+#include <avr/pgmspace.h>
+
+extern uint8_t SmallFont[];
+UTFT myGLCD(ILI9325D_16, 38, 39, 40, 41);
 
 String RGB_HEX;
 File myPic;
 
 struct dataStruct{
-  char R_0;
-  char G_0;
-  char B_0;
-  char R_1;
-  char G_1;
-  char B_1;
-  char R_2;
-  char G_2;
-  char B_2;
-  char R_3;
-  char G_3;
-  char B_3;
-  char R_4;
-  char G_4;
-  char B_4;
-  char R_5;
-  char G_5;
-  char B_5;
-  char R_6;
-  char G_6;
-  char B_6;
-  char R_7;
-  char G_7;
-  char B_7;
-  char R_8;
-  char G_8;
-  char B_8; 
-  char R_9;
-  char G_9;
-  char B_9;                 
+  int R_0;
+  int G_0;
+  int B_0;
+  int R_1;
+  int G_1;
+  int B_1;
+  int R_2;
+  int G_2;
+  int B_2;
+  int R_3;
+  int G_3;
+  int B_3;
+  int R_4;
+  int G_4;
+  int B_4;               
   char stat;
   }RGB;
   
@@ -45,9 +35,22 @@ RF24 radio(7,8);
 
 byte addresses[][6] = {"1Node","2Node"};
 
+int x = 0;
+//int x1 = 1;
+//int x2 = 2;
+//int x3 = 3;
+//int x4 = 4;
+int y = 0;
+
 void setup() {
   Serial.begin(115200);
   radio.begin();
+
+  //set up TFT display
+  myGLCD.InitLCD();
+  myGLCD.setFont(SmallFont);
+  myGLCD.fillScr(0, 0, 0);
+  myGLCD.setColor(255, 255, 255);
 
   //set up SD card
   pinMode(53, OUTPUT);
@@ -88,8 +91,33 @@ void loop() {
       else{
       Serial.println("SD Failed");  
       }  
-     
+          
+      myGLCD.setColor(RGB.R_0, RGB.G_0, RGB.B_0);
+      myGLCD.drawPixel(x, y);
+      x++;
+      myGLCD.setColor(RGB.R_1, RGB.G_1, RGB.B_1);
+      myGLCD.drawPixel(x, y);
+      x++;
+      myGLCD.setColor(RGB.R_2, RGB.G_2, RGB.B_2);
+      myGLCD.drawPixel(x, y);
+      x++;
+      myGLCD.setColor(RGB.R_3, RGB.G_3, RGB.B_3);
+      myGLCD.drawPixel(x, y);
+      x++;
+      myGLCD.setColor(RGB.R_4, RGB.G_4, RGB.B_4);
+      myGLCD.drawPixel(x, y);
+      x++;
+      
+      if(x == 320){
+        y++;
+        x = 0;
+      }
+      if(y > 240){
+        y = 0;
+      }
 
+
+/*
       //========================================================
      //Printing Payload and Manipulate/Save to SD card 
       if (RGB.stat == 1){
@@ -108,7 +136,7 @@ void loop() {
       myPic.println(RGB_HEX);
      }
       //========================================================
-      
+  */    
    
  
 
