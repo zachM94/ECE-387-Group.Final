@@ -85,28 +85,23 @@ void loop() {
 
     //Initializing SD card====================================
       myPic = SD.open("myPic.txt", FILE_WRITE);
-      if (myPic){
-        Serial.println("SD Working");  
-      }  
-      else{
-      Serial.println("SD Failed");  
-      }  
+
           
       myGLCD.setColor(RGB.R_0, RGB.G_0, RGB.B_0);
       myGLCD.drawPixel(x, y);
-      x++;
+      x = x + 1;
       myGLCD.setColor(RGB.R_1, RGB.G_1, RGB.B_1);
       myGLCD.drawPixel(x, y);
-      x++;
+      x = x + 1;
       myGLCD.setColor(RGB.R_2, RGB.G_2, RGB.B_2);
       myGLCD.drawPixel(x, y);
-      x++;
+      x = x + 1;
       myGLCD.setColor(RGB.R_3, RGB.G_3, RGB.B_3);
       myGLCD.drawPixel(x, y);
-      x++;
+      x = x + 1;
       myGLCD.setColor(RGB.R_4, RGB.G_4, RGB.B_4);
       myGLCD.drawPixel(x, y);
-      x++;
+      x = x + 1;
       
       if(x == 320){
         y++;

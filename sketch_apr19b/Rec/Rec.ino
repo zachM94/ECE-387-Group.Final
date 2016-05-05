@@ -19,9 +19,9 @@ bool radioNumber = 0;
 File myPic;
 
 struct dataStruct{
-  long R;
-  long G;
   long B;
+  long G;
+  long R;
   }RGB;
   
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
@@ -29,6 +29,7 @@ RF24 radio(7,8);
 /**********************************************************/
 
 byte addresses[][6] = {"1Node","2Node"};
+unsigned long startPrint = 0;
 
 int x = 0;
 int y = 0;
@@ -36,10 +37,14 @@ int x1 = 0;
 int y1 = 0;
 int num = 0;
 long num2 = 0;
-//unsigned int pic[4800];
+//unsigned int pic[1600];
+
 void setup() {
   Serial.begin(115200);
   radio.begin();
+  radio.setDataRate(RF24_2MBPS);
+  radio.setPayloadSize(12);
+
 
   //set up TFT display
   myGLCD.InitLCD();
@@ -81,28 +86,20 @@ void loop() {
     if( radio.available()){
                                                       // Variable for the received timestamp
       while (radio.available()) {                     // While there is data ready
-        radio.read( &RGB, sizeof(RGB));             // Get the payload
+        if(startPrint == 0){
+          radio.read( &startPrint, sizeof(unsigned long));
+          myGLCD.fillScr(0, 0, 0);
+          x = 0;
+          y = 0;
+        }
+        else{
+        radio.read( &RGB, sizeof(RGB));  
+        }
       }
+
      
-      //Serial.print(F("Sent response "));
-      //Serial.println(RGB.R);
-      //Serial.println(RGB.G);
-      //Serial.println(RGB.B);
-      
-      /*
-      byte red = RGB.R;
-      byte green = RGB.G;
-      byte blue = RGB.B;
-      int col = ((red & 0xF8) << 8)|((green & 0xFC) << 3)|((blue & 0xF8) >> 3);
-      if(num > 4800){
-        myGLCD.drawBitmap (x, y, 320, 15, pic);
-        num = 0;
-        y += 15;
-      }
-      pic[num] = col;
-      num++;
-     */
-      
+
+     
       myGLCD.setColor(RGB.R, RGB.G, RGB.B);
       myGLCD.drawPixel(x, y);
 
@@ -112,23 +109,9 @@ void loop() {
       }
       if(y > 240){
         y = 0;
+        startPrint = 0;
       }
-      x++;
-      
-      /*
-      myPic = SD.open("myPic.txt", FILE_WRITE);
-      if (myPic){
-        Serial.println("Writing to File");
-        myPic.println(RGB.R);
-        myPic.println(RGB.G);
-        myPic.println(RGB.B);
-        myPic.close();  
-      }
-      else {
-        Serial.println("Could not write to file");
-        myPic.close();
-      }
-      */
+     x++;
    }
  
 
