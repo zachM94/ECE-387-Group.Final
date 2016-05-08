@@ -12,10 +12,9 @@
 /***      Set this radio as radio number 0 or 1         ***/
 bool radioNumber = 1;
 int picNum = 1;
-//String RGB;
 long count;
 
-/* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
+/* Hardware configuration: Set up nRF24L01 radio on pins 8 & 9 */
 RF24 radio(8,9);
 /**********************************************************/
 
@@ -45,9 +44,10 @@ int DIBSize;
 File myPic;
 
 struct dataStruct{
-  long R;
-  long G;
-  long B;
+  long R = 0;
+  long G = 0;
+  long B = 0;
+  int state;
   }RGB;
 
 void setup() {
@@ -68,7 +68,7 @@ void setup() {
 
   radio.setPALevel(RF24_PA_MAX);
   radio.setChannel(108);    
-  radio.setPayloadSize(12);
+  radio.setPayloadSize(14);
     
   if(radioNumber){
     radio.openWritingPipe(addresses[1]);
@@ -94,8 +94,8 @@ void loop() {
   }
   else if (buttonState7 == HIGH){
     if (pressed7 == 1) {
-      startPrint = 1;
-      if (!radio.write( &startPrint, sizeof(unsigned long) )){
+      RGB.state = 1;
+      if (!radio.write( &RGB, sizeof(RGB) )){
         Serial.println(F("failed"));
       }
       
@@ -111,8 +111,8 @@ void loop() {
   }
   else if (buttonState6 == HIGH){
     if (pressed6 == 1) {
-      startPrint = 1;
-      if (!radio.write( &startPrint, sizeof(unsigned long) )){
+      RGB.state = 1;
+      if (!radio.write( &RGB, sizeof(RGB) )){
         Serial.println(F("failed"));
       }
       
@@ -128,8 +128,8 @@ void loop() {
   }
   else if (buttonState5 == HIGH){
     if (pressed5 == 1) {
-      startPrint = 1;
-      if (!radio.write( &startPrint, sizeof(unsigned long) )){
+      RGB.state = 1;
+      if (!radio.write( &RGB, sizeof(RGB) )){
         Serial.println(F("failed"));
       }
       
@@ -145,8 +145,8 @@ void loop() {
   }
   else if (buttonState4 == HIGH){
     if (pressed4 == 1) {
-      startPrint = 1;
-      if (!radio.write( &startPrint, sizeof(unsigned long) )){
+      RGB.state = 1;
+      if (!radio.write( &RGB, sizeof(RGB) )){
         Serial.println(F("failed"));
       }
       
@@ -158,6 +158,8 @@ void loop() {
 }
 
 void readPic(String picName){
+  
+  delay(200);
   myPic = SD.open(picName);
 
   for(int x = 0; x < 14; x++){
@@ -182,8 +184,11 @@ void readPic(String picName){
     }
   }
   myPic.close();
-  
-  startPrint = 0;
+
+  RGB.B = 0;
+  RGB.R = 0;
+  RGB.G = 0;
+  RGB.state = 0;
   if (!radio.write( &startPrint, sizeof(unsigned long) )){
     Serial.println(F("failed"));
   }

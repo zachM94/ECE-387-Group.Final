@@ -5,23 +5,22 @@
 */
 
 #include <SPI.h>
-#include <SD.h>
 #include "RF24.h"
 #include <UTFT.h>
 #include <avr/pgmspace.h>
 
 extern uint8_t SmallFont[];
 UTFT myGLCD(ILI9325D_16, 38, 39, 40, 41);
+
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
 bool radioNumber = 0;
-//String RGB;
-File myPic;
 
 struct dataStruct{
-  long B;
-  long G;
-  long R;
+  long B = 0;
+  long G = 0;
+  long R = 0;
+  int state = 0;
   }RGB;
   
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
@@ -33,17 +32,13 @@ unsigned long startPrint = 0;
 
 int x = 0;
 int y = 0;
-int x1 = 0;
-int y1 = 0;
-int num = 0;
-long num2 = 0;
-//unsigned int pic[1600];
+int onetotone = 0;
 
 void setup() {
   Serial.begin(115200);
   radio.begin();
   radio.setDataRate(RF24_2MBPS);
-  radio.setPayloadSize(12);
+  radio.setPayloadSize(14);
 
 
   //set up TFT display
@@ -52,20 +47,7 @@ void setup() {
   myGLCD.fillScr(0, 0, 0);
   myGLCD.setColor(255, 255, 255);
 
-  //set up SD card
-  pinMode(53, OUTPUT);
-
-  if (!SD.begin(53)) {
-    Serial.println("SD Failed!");
-    return;
-  }
-  else {
-    Serial.println("SD READY!");
-  }
-
-
-  // Set the PA Level low to prevent power supply related issues since this is a
- // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
+  // Set the PA Level to Max
   radio.setPALevel(RF24_PA_MAX);
   radio.setChannel(108);
   
@@ -83,36 +65,40 @@ void setup() {
 }
 
 void loop() {     
-    if( radio.available()){
+    if ( radio.available()){
                                                       // Variable for the received timestamp
       while (radio.available()) {                     // While there is data ready
-        if(startPrint == 0){
-          radio.read( &startPrint, sizeof(unsigned long));
+        if(RGB.state == 0 && RGB.R == 0 && RGB.G == 0 && RGB.B == 0){
+          radio.read( &RGB, sizeof(RGB));  
           myGLCD.fillScr(0, 0, 0);
           x = 0;
           y = 0;
+         
         }
         else{
         radio.read( &RGB, sizeof(RGB));  
+        onetotone = 1;
         }
       }
-
-     
-
-     
-      myGLCD.setColor(RGB.R, RGB.G, RGB.B);
-      myGLCD.drawPixel(x, y);
-
-      if(x == 320){
+      
+      if (x == 320){
         y++;
         x = 0;
       }
-      if(y > 240){
+      
+      myGLCD.setColor(RGB.R, RGB.G, RGB.B);
+      myGLCD.drawPixel(x, y);
+      
+      if (y > 240){
         y = 0;
-        startPrint = 0;
+        x = 0;
+        RGB.state = 0;
       }
-     x++;
+      if (onetotone == 1){
+        x++;
+      }
+      onetotone = 0;
    }
  
 
-} // Loop
+}
